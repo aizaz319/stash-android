@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [ $# -lt 2 ]; then
     echo "1: record: true/false
@@ -10,7 +11,7 @@ if [ $# -lt 2 ]; then
     exit
 fi
 
-cd src/androidTest/java
+pushd app/src/androidTest/java
 
 class=$(find | grep $2 | grep -E "java$|kt$" | head -n1|sed s'/\//\./'g | sed s'#^\.\.##' | sed s'#\.java##'| sed s'#\.kt##')
 
@@ -45,7 +46,8 @@ else
     darkMode="-Pandroid.testInstrumentationRunnerArguments.DARKMODE=$4"
 fi
 
-sed -i s'#<bool name="is_beta">false</bool>#<bool name="is_beta">true</bool>#'g src/main/res/values/setup.xml
+popd
+sed -i s'#<bool name="is_beta">false</bool>#<bool name="is_beta">true</bool>#'g app/src/main/res/values/setup.xml
 
 # check if emulator is running
 emulatorIsRunning=false
@@ -57,8 +59,9 @@ while read line ; do
     fi
 done < <(adb devices | cut -f1)
 
-if [ ! $emulatorIsRunning ] ; then
-    emulator -writable-system -avd uiComparison -no-snapshot -gpu swiftshader_indirect -no-audio -skin 500x833 &
+if [ "$emulatorIsRunning" == false ] ; then
+    "$(command -v emulator)" -writable-system -avd uiComparison -no-snapshot -gpu swiftshader_indirect -no-audio -skin 500x833 &
+    sleep 20
 fi
 
 if [ -e $5 ] ; then
@@ -79,5 +82,5 @@ else
 fi
 
 
-sed -i s'#<bool name="is_beta">true</bool>#<bool name="is_beta">false</bool>#'g src/main/res/values/setup.xml
+sed -i s'#<bool name="is_beta">true</bool>#<bool name="is_beta">false</bool>#'g app/src/main/res/values/setup.xml
 unset ANDROID_SERIAL

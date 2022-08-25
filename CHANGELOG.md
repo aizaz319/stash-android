@@ -1,9 +1,110 @@
-## 3.17.0 (-, -, -)
+## 3.21.0 RC1 (July 12, 2022)
 
-- New upload manager @ezaquarii
-- UI improvements
+- Fast scroll for all lists
+- Media view
+ - Group photos as timeline by month
+ - Filter options
+- File locking
+- File export to sdcard
+- Many bugfixes and improvements
 
-Minimum: NC 16 Server, Android 5.0 Lollipop 
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/66
+
+## 3.20.3 (June 13th, 2022)
+
+- Minor bug fixes
+
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/69
+
+## 3.20.2 (June 9th, 2022)
+
+- Several minor bugfixes
+
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/68
+
+## 3.20.1 (May 6th, 2022)
+
+- Several minor bugfixes
+
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/67
+## 3.20.0 (May 3rd, 2022)
+
+- Built-in PDF viewer
+- Built-in document scanner
+- Better choices for storage permissions
+- File locking support
+- Better UI for media gallery
+- Many bugfixes and improvements
+
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/64
+## 3.19.1 (March 10, 2022)
+
+- Minor fixes and improvements
+
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/65
+## 3.19.0 (February 3, 2022)
+
+- Support external storage in Media page
+- Connection fallback to IPv4 when IPv6 fails
+- Many other fixes and improvements
+
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/62
+## 3.18.1 (December 22, 2021)
+
+- Fix connection bug for usernames with spaces
+- Fix some crashes in search and share views
+- Fix login for server URLs in IP:port format
+- Lots of minor bug fixes
+
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/63
+
+## 3.18.0 (November 18, 2021)
+
+- Calendar backup/restore
+- Unified search
+- Sharing permissions improvements
+- Minor bug fixes
+
+Minimum: NC 16 Server, Android 6.0 Marshmallow
+
+For a full list, please see https://github.com/nextcloud/android/milestone/61
+
+## 3.17.1 (October, 20, 2021)
+
+- fix FIDO crash
+- fix crash in documents provider while offline
+- updated translations
+
+Minimum: NC 16 Server, Android 5.1 Lollipop
+
+
+For a full list, please see https://github.com/nextcloud/android/milestone/60
+
+## 3.17.0 (August, 19, 2021)
+
+- UI improvements (Avatar, password dialog)
+- New video player for better streaming
+- Many bug fixes
+- Drop Android 5.0, new min version Android 5.1
+
+Minimum: NC 16 Server, Android 5.1 Lollipop
+
 
 For a full list, please see https://github.com/nextcloud/android/milestone/59
 
@@ -37,6 +138,9 @@ For a full list, please see https://github.com/nextcloud/android/milestone/55
 - passcode fix
 - enhance share access
 
+Minimum: NC 16 Server, Android 5.0 Lollipop 
+
+
 For a full list, please see https://github.com/nextcloud/android/milestone/57
 
 ## 3.15.0 (February, 02, 2021)
@@ -45,6 +149,9 @@ For a full list, please see https://github.com/nextcloud/android/milestone/57
 - UI Improvement (shimmer)
 - Bug fixes all over the place
 - Drop Android 4.4, new min version Android 5.0
+
+Minimum: NC 16 Server, Android 5.0 Lollipop 
+
 
 For a full list, please see https://github.com/nextcloud/android/milestone/52
 
