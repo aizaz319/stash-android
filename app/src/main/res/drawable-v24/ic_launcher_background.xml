@@ -5,23 +5,33 @@
     android:viewportWidth="1344"
     android:viewportHeight="1344">
     <path
-        android:pathData="M0,0h1344v1344h-1344z"
-        android:strokeLineJoin="round"
-        android:fillType="evenOdd">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:startY="1344.0002"
-                android:startX="163.34073"
-                android:endY="1.2959057E-4"
-                android:endX="1343.9999"
-                android:type="linear">
-                <item
-                    android:offset="0"
-                    android:color="#FF21437A" />
-                <item
-                    android:offset="1"
-                    android:color="#FF1CAFFF" />
-            </gradient>
-        </aapt:attr>
-    </path>
-</vector>
+    android:pathData="M0,0h1344v1344h-1344z"
+    android:strokeLineJoin="round"
+    android:fillType="evenOdd">
+    <aapt:attr name="android:fillColor">
+        <gradient
+            android:startY="1344.0002"
+            android:startX="163.34073"
+            android:endY="1.2959057E-4"
+            android:endX="1343.9999"
+            android:type="linear">
+            <item
+                android:offset="0"
+                android:color="#FF21437A" />
+            <item
+                android:offset="1"
+                android:color="#FF1CAFFF" />
+
+
+
+
+
+
+
+
+
+
+        </gradient>
+    </aapt:attr>
+</path>
+    </vector>
