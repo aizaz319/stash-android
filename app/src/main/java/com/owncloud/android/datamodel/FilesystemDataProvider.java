@@ -26,7 +26,7 @@ import android.net.Uri;
 
 import com.owncloud.android.db.ProviderMeta;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.utils.SyncedFolderUtils;
+import com.owncloud.android.utils.SyncedFolderUtilss;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -100,9 +100,9 @@ public class FilesystemDataProvider {
                         File file = new File(value);
                         if (!file.exists()) {
                             Log_OC.d(TAG, "Ignoring file for upload (doesn't exist): " + value);
-                        } else if (!SyncedFolderUtils.isQualifiedFolder(file.getParent())) {
+                        } else if (!SyncedFolderUtilss.isQualifiedFolder(file.getParent())) {
                             Log_OC.d(TAG, "Ignoring file for upload (unqualified folder): " + value);
-                        } else if (!SyncedFolderUtils.isFileNameQualifiedForAutoUpload(file.getName())) {
+                        } else if (!SyncedFolderUtilss.isFileNameQualifiedForAutoUpload(file.getName())) {
                             Log_OC.d(TAG, "Ignoring file for upload (unqualified file): " + value);
                         } else {
                             localPathsToUpload.add(value);

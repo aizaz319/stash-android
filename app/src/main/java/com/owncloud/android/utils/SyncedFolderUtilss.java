@@ -36,7 +36,7 @@ import androidx.annotation.Nullable;
 /**
  * Utility class with methods for processing synced folders.
  */
-public final class SyncedFolderUtils {
+public final class SyncedFolderUtilss {
     private static final String[] DISQUALIFIED_MEDIA_DETECTION_SOURCE = new String[]{
         "cover.jpg", "cover.jpeg",
         "folder.jpg", "folder.jpeg"
@@ -49,7 +49,7 @@ public final class SyncedFolderUtils {
     private static final String THUMBNAIL_DATA_FILE_PREFIX = ".thumbdata";
     private static final int SINGLE_FILE = 1;
 
-    private SyncedFolderUtils() {
+    private SyncedFolderUtilss() {
         // utility class -> private constructor
     }
 
