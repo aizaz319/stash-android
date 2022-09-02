@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.pluscloudsstash.client",
+  "variantName": "genericRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 30210190,
+      "versionName": "3.21.1",
+      "outputFile": "generic-release-30210190.apk"
+    }
+  ],
+  "elementType": "File"
+}

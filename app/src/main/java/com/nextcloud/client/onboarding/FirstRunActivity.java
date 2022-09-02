@@ -30,12 +30,22 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputEditText;
 import com.nextcloud.client.account.UserAccountManager;
 import com.nextcloud.client.appinfo.AppInfo;
 import com.nextcloud.client.di.Injectable;
@@ -50,8 +60,17 @@ import com.owncloud.android.ui.adapter.FeaturesViewAdapter;
 import com.owncloud.android.ui.whatsnew.ProgressIndicator;
 import com.owncloud.android.utils.DisplayUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.viewpager.widget.ViewPager;
 
 /**
@@ -62,6 +81,9 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
     public static final String EXTRA_ALLOW_CLOSE = "ALLOW_CLOSE";
     public static final String EXTRA_EXIT = "EXIT";
     public static final int FIRST_RUN_RESULT_CODE = 199;
+
+    TextInputEditText nameEditText, surnameEditText, emailEditText, passwordEditText, cellPhoneCodeEditText,
+                    cellPhoneNumberEditText, defaultLocaleEditText, gift_codeEditText;
 
     private ProgressIndicator progressIndicator;
 
@@ -111,9 +133,65 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
             }
         });
 
+        TextView sign_up = findViewById(R.id.sign_up);
+        sign_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater li = LayoutInflater.from(FirstRunActivity.this);
+                View view = li.inflate(R.layout.register_dialog, null);
+                AlertDialog alertDialogBuilder = new AlertDialog.Builder(FirstRunActivity.this)
+                    .setView(view).setCancelable(true).
+                    setTitle("Sign Up").
+                    setMessage("Please Enter all the information").
+                    setPositiveButton("OK", null)
+                    .setNegativeButton("Cancel", null)
+                    .show();
+
+
+                nameEditText = (TextInputEditText) view.findViewById(R.id.nameEditText);
+                surnameEditText = (TextInputEditText) view.findViewById(R.id.surnameEditText);
+                emailEditText = (TextInputEditText) view.findViewById(R.id.emailEditText);
+                passwordEditText = (TextInputEditText) view.findViewById(R.id.passwordEditText);
+                cellPhoneCodeEditText = (TextInputEditText) view.findViewById(R.id.cellPhoneCodeEditText);
+                cellPhoneNumberEditText = view.findViewById(R.id.phoneNumberEditText);
+                defaultLocaleEditText = view.findViewById(R.id.defaultLocaleEditText);
+                gift_codeEditText = view.findViewById(R.id.giftCodeEditText);
+
+
+
+
+
+
+
+                Button positiveButton = alertDialogBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
+
+                Button negativeButton = alertDialogBuilder.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String nameStr = nameEditText.getText().toString();
+                        String surnameStr = surnameEditText.getText().toString();
+                        String emailStr = emailEditText.getText().toString();
+                        String passwordStr = passwordEditText.getText().toString();
+                        String phoneCodeStr = cellPhoneCodeEditText.getText().toString();
+                        String phoneNumberStr = cellPhoneNumberEditText.getText().toString();
+                        String defaultLocaleStr = defaultLocaleEditText.getText().toString();
+                        String giftCodeStr = gift_codeEditText.getText().toString();
+
+                        registerUser(nameStr, surnameStr, emailStr, passwordStr, phoneCodeStr,
+                                     phoneNumberStr, defaultLocaleStr, giftCodeStr);
+                    }
+                });
+
+
+            }
+        });
+
         TextView hostOwnServerTextView = findViewById(R.id.host_own_server);
         hostOwnServerTextView.setTextColor(getResources().getColor(R.color.login_text_color));
-        hostOwnServerTextView.setVisibility(isProviderOrOwnInstallationVisible ? View.VISIBLE : View.GONE);
+//        hostOwnServerTextView.setVisibility(isProviderOrOwnInstallationVisible ? View.VISIBLE : View.GONE);
+        hostOwnServerTextView.setVisibility(View.GONE);
 
         if(!isProviderOrOwnInstallationVisible) {
             hostOwnServerTextView.setOnClickListener(v -> onHostYourOwnServerClick());
@@ -132,6 +210,62 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
         viewPager.setAdapter(featuresViewAdapter);
 
         viewPager.addOnPageChangeListener(this);
+    }
+
+    private void registerUser(String nameStr, String surnameStr, String emailStr,
+                              String passwordStr, String phoneCodeStr, String phoneNumberStr,
+                              String defaultLocaleStr, String giftCodeStr) {
+        String url = "https://api.plusclouds.com/v2/partners/teknosa/register";
+
+        RequestQueue queue = Volley.newRequestQueue(FirstRunActivity.this);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                  new Response.Listener<String>(){
+
+                      @Override
+                      public void onResponse(String response) {
+                          try{
+                              JSONObject respObj = new JSONObject(response);
+                              String nameStr = respObj.getString("name");
+                              String surnameStr = respObj.getString("surname");
+                              String emailStr = respObj.getString("email");
+                              String passwordStr = respObj.getString("password");
+                              String cellPhoneCodeStr = respObj.getString("cell_phone_code");
+                              String cellPhoneNumberStr = respObj.getString("cell_phone_number");
+                              String defaultLocaleStr = respObj.getString("default_locale");
+                              String giftCodeStr = respObj.getString("gift_code");
+
+                          }
+                          catch (JSONException e) {
+                              e.printStackTrace();
+                          }
+                      }
+                  },
+                  new Response.ErrorListener(){
+
+                      @Override
+                      public void onErrorResponse(VolleyError error) {
+                          Toast.makeText(FirstRunActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                      }
+                  }){
+            @NonNull
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("name", nameStr);
+                params.put("surname", surnameStr);
+                params.put("email", emailStr);
+                params.put("password", passwordStr);
+                params.put("cell_phone_code", phoneCodeStr);
+                params.put("cell_phone_number", phoneNumberStr);
+                params.put("default_locale", defaultLocaleStr);
+                params.put("gift_code", giftCodeStr);
+
+                return params;
+            }
+        };
+
+        queue.add(request);
     }
 
     private void setSlideshowSize(boolean isLandscape) {

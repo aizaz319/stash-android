@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.pluscloudsstash.client",
+  "variantName": "huaweiRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 30210190,
+      "versionName": "3.21.1",
+      "outputFile": "huawei-release-30210190.apk"
+    }
+  ],
+  "elementType": "File"
+}
