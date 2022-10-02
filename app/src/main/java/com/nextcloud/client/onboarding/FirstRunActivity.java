@@ -179,8 +179,42 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                         String defaultLocaleStr = defaultLocaleEditText.getText().toString();
                         String giftCodeStr = gift_codeEditText.getText().toString();
 
-                        registerUser(nameStr, surnameStr, emailStr, passwordStr, phoneCodeStr,
-                                     phoneNumberStr, defaultLocaleStr, giftCodeStr);
+                        if((nameStr.length()<=0) && (surnameStr.length()<=0) && (emailStr.length()<=0)
+                        && (passwordStr.length()<=0) && (giftCodeStr.length()<=0)){
+                            nameEditText.setError("Please enter your name");
+                            surnameEditText.setError("Please enter your surname");
+                            emailEditText.setError("Please enter your email");
+                            passwordEditText.setError("Please enter password");
+                            gift_codeEditText.setError("Please enter your name");
+
+
+                        }
+                        else {
+                            if(nameStr.length()<=0){
+                                nameEditText.setError("Please enter your name");
+                            }
+                             if(surnameStr.length()<=0){
+                                surnameEditText.setError("Please enter your surname");
+                            }
+                             if(emailStr.length()<=0){
+                                emailEditText.setError("Please enter your email");
+                            }
+                             if(passwordStr.length()<=0){
+                                passwordEditText.setError("Please enter password");
+                            }
+                             if(giftCodeStr.length()<=0){
+                                gift_codeEditText.setError("Please enter your name");
+                            }
+                            else{
+                                registerUser(nameStr, surnameStr, emailStr, passwordStr, giftCodeStr);
+                            }
+                        }
+//                        else{
+//
+//                            registerUser(nameStr, surnameStr, emailStr, passwordStr, phoneCodeStr,
+//                                         phoneNumberStr, defaultLocaleStr, giftCodeStr);
+//                        }
+
                     }
                 });
 
@@ -213,8 +247,7 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
     }
 
     private void registerUser(String nameStr, String surnameStr, String emailStr,
-                              String passwordStr, String phoneCodeStr, String phoneNumberStr,
-                              String defaultLocaleStr, String giftCodeStr) {
+                              String passwordStr,String giftCodeStr) {
         String url = "https://api.plusclouds.com/v2/partners/teknosa/register";
 
         RequestQueue queue = Volley.newRequestQueue(FirstRunActivity.this);
@@ -245,7 +278,7 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
 
                       @Override
                       public void onErrorResponse(VolleyError error) {
-                          Toast.makeText(FirstRunActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                          Toast.makeText(FirstRunActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                       }
                   }){
             @NonNull
@@ -256,9 +289,9 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                 params.put("surname", surnameStr);
                 params.put("email", emailStr);
                 params.put("password", passwordStr);
-                params.put("cell_phone_code", phoneCodeStr);
-                params.put("cell_phone_number", phoneNumberStr);
-                params.put("default_locale", defaultLocaleStr);
+//                params.put("cell_phone_code", phoneCodeStr);
+//                params.put("cell_phone_number", phoneNumberStr);
+//                params.put("default_locale", defaultLocaleStr);
                 params.put("gift_code", giftCodeStr);
 
                 return params;

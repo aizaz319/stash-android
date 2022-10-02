@@ -112,7 +112,7 @@
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
             android:textColor="@color/white"
-            android:visibility="gone"
+            android:visibility="visible"
             android:text="Sign Up / Register"/>
     </LinearLayout>
 
