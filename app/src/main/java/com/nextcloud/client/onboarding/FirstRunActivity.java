@@ -26,10 +26,12 @@ package com.nextcloud.client.onboarding;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +83,7 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
     public static final String EXTRA_ALLOW_CLOSE = "ALLOW_CLOSE";
     public static final String EXTRA_EXIT = "EXIT";
     public static final int FIRST_RUN_RESULT_CODE = 199;
+    ProgressDialog mProgressDialog;
 
     TextInputEditText nameEditText, surnameEditText, emailEditText, passwordEditText, cellPhoneCodeEditText,
                     cellPhoneNumberEditText, defaultLocaleEditText, gift_codeEditText;
@@ -98,6 +101,8 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.first_run_activity);
+
+        mProgressDialog = new ProgressDialog(FirstRunActivity.this);
 
         boolean isProviderOrOwnInstallationVisible = getResources().getBoolean(R.bool.show_provider_or_own_installation);
 
@@ -248,6 +253,16 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
 
     private void registerUser(String nameStr, String surnameStr, String emailStr,
                               String passwordStr,String giftCodeStr) {
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//        mProgressDialog.setMessage("Progressing...");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setProgress(0);
+        mProgressDialog.setProgressNumberFormat(null);
+        mProgressDialog.setTitle("Please wait...");
+        mProgressDialog.setMessage("Registering Information...");
+        mProgressDialog.setProgressPercentFormat(null);
+        mProgressDialog.show();
         String url = "https://api.plusclouds.com/v2/partners/teknosa/register";
 
         RequestQueue queue = Volley.newRequestQueue(FirstRunActivity.this);
@@ -267,10 +282,12 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                               String cellPhoneNumberStr = respObj.getString("cell_phone_number");
                               String defaultLocaleStr = respObj.getString("default_locale");
                               String giftCodeStr = respObj.getString("gift_code");
+                              mProgressDialog.dismiss();
 
                           }
                           catch (JSONException e) {
                               e.printStackTrace();
+                              mProgressDialog.dismiss();
                           }
                       }
                   },
@@ -278,7 +295,21 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
 
                       @Override
                       public void onErrorResponse(VolleyError error) {
-                          Toast.makeText(FirstRunActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                          mProgressDialog.setTitle("Unexprected Error Occured");
+                          mProgressDialog.setMessage("Unexpected response code 422 for https://api.plusclouds.com/v2/partners/teknosa/register");
+                          new Handler().postDelayed(new Runnable() {
+                              @Override
+                              public void run() {
+
+
+
+                                  mProgressDialog.dismiss();
+//                    Toast.makeText(this, loggedUser + " has been logged out", Toast.LENGTH_SHORT).show();
+//            finish();
+                              }
+                          }, 5000);
+//                          mProgressDialog.dismiss();
+//                          Toast.makeText(FirstRunActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                       }
                   }){
             @NonNull
