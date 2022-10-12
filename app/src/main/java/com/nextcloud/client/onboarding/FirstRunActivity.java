@@ -65,6 +65,9 @@ import com.owncloud.android.utils.DisplayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -185,12 +188,15 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                         String giftCodeStr = gift_codeEditText.getText().toString();
 
                         if((nameStr.length()<=0) && (surnameStr.length()<=0) && (emailStr.length()<=0)
-                        && (passwordStr.length()<=0) && (giftCodeStr.length()<=0)){
+                        && (passwordStr.length()<=0) && (phoneCodeStr.length()<=0)
+                        && (giftCodeStr.length()<=0) && (phoneNumberStr.length() <=0)){
                             nameEditText.setError("Please enter your name");
                             surnameEditText.setError("Please enter your surname");
                             emailEditText.setError("Please enter your email");
                             passwordEditText.setError("Please enter password");
-                            gift_codeEditText.setError("Please enter your name");
+                            cellPhoneCodeEditText.setError("Cell Phone Code is required");
+                            cellPhoneNumberEditText.setError("Cell Phone Number is required");
+                            gift_codeEditText.setError("Please enter gift code");
 
 
                         }
@@ -207,11 +213,18 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                              if(passwordStr.length()<=0){
                                 passwordEditText.setError("Please enter password");
                             }
+                            if(phoneCodeStr.length()<=0){
+                                cellPhoneCodeEditText.setError("Please enter area code");
+                            }
+                            if(phoneNumberStr.length()<=0){
+                                cellPhoneNumberEditText.setError("Please enter phone number");
+                            }
                              if(giftCodeStr.length()<=0){
-                                gift_codeEditText.setError("Please enter your name");
+                                gift_codeEditText.setError("Please enter your gift code");
                             }
                             else{
-                                registerUser(nameStr, surnameStr, emailStr, passwordStr, giftCodeStr);
+                                registerUser(nameStr, surnameStr, emailStr, passwordStr, phoneCodeStr,
+                                            phoneNumberStr, giftCodeStr);
                             }
                         }
 //                        else{
@@ -252,7 +265,7 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
     }
 
     private void registerUser(String nameStr, String surnameStr, String emailStr,
-                              String passwordStr,String giftCodeStr) {
+                              String passwordStr, String phoneCodeStr, String phoneNumberStr, String giftCodeStr) {
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 //        mProgressDialog.setMessage("Progressing...");
         mProgressDialog.setIndeterminate(true);
@@ -283,6 +296,7 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                               String defaultLocaleStr = respObj.getString("default_locale");
                               String giftCodeStr = respObj.getString("gift_code");
                               mProgressDialog.dismiss();
+                              Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
 
                           }
                           catch (JSONException e) {
@@ -295,21 +309,26 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
 
                       @Override
                       public void onErrorResponse(VolleyError error) {
-                          mProgressDialog.setTitle("Unexprected Error Occured");
-                          mProgressDialog.setMessage("Unexpected response code 422 for https://api.plusclouds.com/v2/partners/teknosa/register");
-                          new Handler().postDelayed(new Runnable() {
-                              @Override
-                              public void run() {
+                          if(error == null || error.networkResponse== null){
+                              return;
+                          }
+                          String body;
+                          final String statusCode = String.valueOf(error.networkResponse.statusCode);
+//                          Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
+                          mProgressDialog.dismiss();
+                          body = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+//                          Toast.makeText(FirstRunActivity.this, "B: " + body, Toast.LENGTH_SHORT).show();
+//                              mProgressDialog.setMessage(body);
+                          String newString = body.replaceAll("[\\{\\}\\[\\]\"]", "");
+                          String formattedStr = newString.replaceAll(",", "\n\n");
+                          String splitStr = formattedStr.substring(102);
+                          AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
+                          builder.setTitle("Following Error(s) Occurred! Please Check and Enter Correct Information");
+                          builder.setMessage(splitStr);
 
 
-
-                                  mProgressDialog.dismiss();
-//                    Toast.makeText(this, loggedUser + " has been logged out", Toast.LENGTH_SHORT).show();
-//            finish();
-                              }
-                          }, 5000);
-//                          mProgressDialog.dismiss();
-//                          Toast.makeText(FirstRunActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                          AlertDialog alertDialog = builder.create();
+                          alertDialog.show();
                       }
                   }){
             @NonNull
@@ -320,8 +339,8 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                 params.put("surname", surnameStr);
                 params.put("email", emailStr);
                 params.put("password", passwordStr);
-//                params.put("cell_phone_code", phoneCodeStr);
-//                params.put("cell_phone_number", phoneNumberStr);
+                params.put("cell_phone_code", phoneCodeStr);
+                params.put("cell_phone_number", phoneNumberStr);
 //                params.put("default_locale", defaultLocaleStr);
                 params.put("gift_code", giftCodeStr);
 
