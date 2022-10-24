@@ -32,6 +32,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
@@ -89,7 +91,7 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
     ProgressDialog mProgressDialog;
 
     TextInputEditText nameEditText, surnameEditText, emailEditText, passwordEditText, cellPhoneCodeEditText,
-                    cellPhoneNumberEditText, defaultLocaleEditText, gift_codeEditText;
+        cellPhoneNumberEditText, defaultLocaleEditText, gift_codeEditText;
 
     private ProgressIndicator progressIndicator;
 
@@ -166,11 +168,6 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                 gift_codeEditText = view.findViewById(R.id.giftCodeEditText);
 
 
-
-
-
-
-
                 Button positiveButton = alertDialogBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
 
                 Button negativeButton = alertDialogBuilder.getButton(AlertDialog.BUTTON_NEGATIVE);
@@ -187,9 +184,9 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                         String defaultLocaleStr = defaultLocaleEditText.getText().toString();
                         String giftCodeStr = gift_codeEditText.getText().toString();
 
-                        if((nameStr.length()<=0) && (surnameStr.length()<=0) && (emailStr.length()<=0)
-                        && (passwordStr.length()<=0) && (phoneCodeStr.length()<=0)
-                        && (giftCodeStr.length()<=0) && (phoneNumberStr.length() <=0)){
+                        if ((nameStr.length() <= 0) && (surnameStr.length() <= 0) && (emailStr.length() <= 0)
+                            && (passwordStr.length() <= 0) && (phoneCodeStr.length() <= 0)
+                            && (giftCodeStr.length() <= 0) && (phoneNumberStr.length() <= 0)) {
                             nameEditText.setError("Please enter your name");
                             surnameEditText.setError("Please enter your surname");
                             emailEditText.setError("Please enter your email");
@@ -199,32 +196,30 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                             gift_codeEditText.setError("Please enter gift code");
 
 
-                        }
-                        else {
-                            if(nameStr.length()<=0){
+                        } else {
+                            if (nameStr.length() <= 0) {
                                 nameEditText.setError("Please enter your name");
                             }
-                             if(surnameStr.length()<=0){
+                            if (surnameStr.length() <= 0) {
                                 surnameEditText.setError("Please enter your surname");
                             }
-                             if(emailStr.length()<=0){
+                            if (emailStr.length() <= 0) {
                                 emailEditText.setError("Please enter your email");
                             }
-                             if(passwordStr.length()<=0){
+                            if (passwordStr.length() <= 0) {
                                 passwordEditText.setError("Please enter password");
                             }
-                            if(phoneCodeStr.length()<=0){
+                            if (phoneCodeStr.length() <= 0) {
                                 cellPhoneCodeEditText.setError("Please enter area code");
                             }
-                            if(phoneNumberStr.length()<=0){
+                            if (phoneNumberStr.length() <= 0) {
                                 cellPhoneNumberEditText.setError("Please enter phone number");
                             }
-                             if(giftCodeStr.length()<=0){
+                            if (giftCodeStr.length() <= 0) {
                                 gift_codeEditText.setError("Please enter your gift code");
-                            }
-                            else{
+                            } else {
                                 registerUser(nameStr, surnameStr, emailStr, passwordStr, phoneCodeStr,
-                                            phoneNumberStr, giftCodeStr);
+                                             phoneNumberStr, giftCodeStr);
                             }
                         }
 //                        else{
@@ -245,7 +240,7 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
 //        hostOwnServerTextView.setVisibility(isProviderOrOwnInstallationVisible ? View.VISIBLE : View.GONE);
         hostOwnServerTextView.setVisibility(View.GONE);
 
-        if(!isProviderOrOwnInstallationVisible) {
+        if (!isProviderOrOwnInstallationVisible) {
             hostOwnServerTextView.setOnClickListener(v -> onHostYourOwnServerClick());
         }
 
@@ -268,7 +263,7 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
                               String passwordStr, String phoneCodeStr, String phoneNumberStr, String giftCodeStr) {
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 //        mProgressDialog.setMessage("Progressing...");
-        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setIndeterminate(false);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setProgress(0);
         mProgressDialog.setProgressNumberFormat(null);
@@ -279,58 +274,282 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
         String url = "https://api.plusclouds.com/v2/partners/teknosa/register";
 
         RequestQueue queue = Volley.newRequestQueue(FirstRunActivity.this);
+        JSONObject postData = new JSONObject();
+        try{
+//            postData.put("name", nameStr);
+            postData.put("name", nameStr);
+            postData.put("surname", surnameStr);
+            postData.put("email", emailStr);
+            postData.put("password", passwordStr);
+            postData.put("cell_phone_code", phoneCodeStr);
+            postData.put("cell_phone_number", phoneNumberStr);
+//                params.put("default_locale", defaultLocaleStr);
+            postData.put("gift_code", giftCodeStr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        StringRequest request = new StringRequest(Request.Method.POST, url,
-                  new Response.Listener<String>(){
+//        Map<String, String> postParams = new HashMap<String, String>();
+//        postParams.put("name", nameStr);
+//        postParams.put("surname", surnameStr);
+//        postParams.put("email", emailStr);
+//        postParams.put("password", passwordStr);
+//        postParams.put("cell_phone_code", phoneCodeStr);
+//        postParams.put("cell_phone_number", phoneNumberStr);
+////                params.put("default_locale", defaultLocaleStr);
+//        postParams.put("gift_code", giftCodeStr);
 
-                      @Override
-                      public void onResponse(String response) {
-                          try{
-                              JSONObject respObj = new JSONObject(response);
-                              String nameStr = respObj.getString("name");
-                              String surnameStr = respObj.getString("surname");
-                              String emailStr = respObj.getString("email");
-                              String passwordStr = respObj.getString("password");
-                              String cellPhoneCodeStr = respObj.getString("cell_phone_code");
-                              String cellPhoneNumberStr = respObj.getString("cell_phone_number");
-                              String defaultLocaleStr = respObj.getString("default_locale");
-                              String giftCodeStr = respObj.getString("gift_code");
-                              mProgressDialog.dismiss();
-                              Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+            (Request.Method.POST,
+             url,
+             postData,
+             new Response.Listener<JSONObject>() {
+                 @Override
+                 public void onResponse(JSONObject response) {
 
-                          }
-                          catch (JSONException e) {
-                              e.printStackTrace();
-                              mProgressDialog.dismiss();
-                          }
-                      }
-                  },
-                  new Response.ErrorListener(){
+                     mProgressDialog.dismiss();
 
-                      @Override
-                      public void onErrorResponse(VolleyError error) {
-                          if(error == null || error.networkResponse== null){
-                              return;
-                          }
-                          String body;
-                          final String statusCode = String.valueOf(error.networkResponse.statusCode);
-//                          Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
-                          mProgressDialog.dismiss();
-                          body = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+                     try {
+                         JSONObject jObj = new JSONObject(String.valueOf(response));
+                         String success = jObj.getString("result");
+                         Log.e("value in success", String.valueOf(success));
+
+                         Toast.makeText(FirstRunActivity.this, "success: " + success, Toast.LENGTH_LONG).show();
+
+                         Toast.makeText(FirstRunActivity.this, "response true: " + response, Toast.LENGTH_SHORT).show();
+                         Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+
+
+                         Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+                         Intent authenticatorActivityIntent = new Intent(FirstRunActivity.this, AuthenticatorActivity.class);
+                         authenticatorActivityIntent.putExtra(AuthenticatorActivity.EXTRA_USE_PROVIDER_AS_WEBLOGIN, false);
+                         startActivityForResult(authenticatorActivityIntent, FIRST_RUN_RESULT_CODE);
+
+                     } catch (JSONException e) {
+
+                         Log.i("myTag", e.toString());
+                         Toast.makeText(FirstRunActivity.this, "Parsing error", Toast.LENGTH_SHORT).show();
+
+                     }
+
+//                         Toast.makeText(FirstRunActivity.this, "response true: " + response, Toast.LENGTH_SHORT).show();
+//                         Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+
+//                         Intent authenticatorActivityIntent = new Intent(FirstRunActivity.this, AuthenticatorActivity.class);
+//                         authenticatorActivityIntent.putExtra(AuthenticatorActivity.EXTRA_USE_PROVIDER_AS_WEBLOGIN, false);
+//                         startActivityForResult(authenticatorActivityIntent, FIRST_RUN_RESULT_CODE);
+
+//                         AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
+//                         builder.setTitle("Congratulation!");
+//                         builder.setMessage("Your Information registered successfully...");
+//
+//
+//                         AlertDialog alertDialog = builder.create();
+//                         alertDialog.show();
+
+
+                 }
+             }
+                , new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+//                    if (error == null || error.networkResponse == null) {
+//                        return;
+//                    }
+                    String body;
+                    final String statusCode = String.valueOf(error.networkResponse.statusCode);
+
+                    String bodySuccessful = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+                    if(bodySuccessful.contains("true")){
+
+                        mProgressDialog.dismiss();
+//                            Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+                        Intent authenticatorActivityIntent = new Intent(FirstRunActivity.this, AuthenticatorActivity.class);
+                        authenticatorActivityIntent.putExtra(AuthenticatorActivity.EXTRA_USE_PROVIDER_AS_WEBLOGIN, false);
+                        startActivityForResult(authenticatorActivityIntent, FIRST_RUN_RESULT_CODE);
+                    }
+//                    if(Integer.parseInt(statusCode) == 422){
+//                        Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
+                        mProgressDialog.dismiss();
+                        body = new String(error.networkResponse.data, StandardCharsets.UTF_8);
 //                          Toast.makeText(FirstRunActivity.this, "B: " + body, Toast.LENGTH_SHORT).show();
 //                              mProgressDialog.setMessage(body);
-                          String newString = body.replaceAll("[\\{\\}\\[\\]\"]", "");
-                          String formattedStr = newString.replaceAll(",", "\n\n");
-                          String splitStr = formattedStr.substring(102);
-                          AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
-                          builder.setTitle("Following Error(s) Occurred! Please Check and Enter Correct Information");
-                          builder.setMessage(splitStr);
+                        String newString = body.replaceAll("[\\{\\}\\[\\]\"]", "");
+                        String formattedStr = newString.replaceAll(",", "\n\n");
+                        String splitStr = formattedStr.substring(102);
+
+                        if(body.contains("true")){
+
+                            mProgressDialog.dismiss();
+    //                            Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+                            Intent authenticatorActivityIntent = new Intent(FirstRunActivity.this, AuthenticatorActivity.class);
+                            authenticatorActivityIntent.putExtra(AuthenticatorActivity.EXTRA_USE_PROVIDER_AS_WEBLOGIN, false);
+                            startActivityForResult(authenticatorActivityIntent, FIRST_RUN_RESULT_CODE);
+                        }
+
+                        else if(body.contains("B\\u00f6yle bir kod bulunamam\\u0131")){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
+                            builder.setTitle("Following Error(s) Occurred! Please Check and Enter Correct Information");
+                            builder.setMessage("Böyle bir kod bulunamamıştır. Lütfen kodunuzu kontrol edip tekrar giriniz.");
 
 
-                          AlertDialog alertDialog = builder.create();
-                          alertDialog.show();
-                      }
-                  }){
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        }
+                        else if(body.contains("Bu kod daha \\u00f6nceden kullan\\u0131lm\\u0131\\u015f")){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
+                            builder.setTitle("Following Error(s) Occurred! Please Check and Enter Correct Information");
+                            builder.setMessage("Bu kod daha önceden kullanılmış. Aynı kod ile tekrar satın alım yapamazsınız. " +
+                                                   "Eğer bunun bir hata olduğunu düşünüyorsanız lütfen bizimle iletişime geçiniz.\"");
+//                            builder.setMessage("This code has been used before. You can't buy again with the same code");
+
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        }
+                        else if(body.contains("Bu e-posta adresi ile daha \\u00f6nce hesap yarat\\u0131lm\\u0131\\u015ft\\u0131r")){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
+                            builder.setTitle("Following Error(s) Occurred! Please Check and Enter Correct Information");
+                            builder.setMessage("Bu e-posta adresi ile daha önce hesap yaratılmıştır. \nLütfen başka bir " +
+                                                   "e-posta adresi deneyin veya mevcut e-posta adresiniz ile " +
+                                                   "\"https://leo.plusclouds.com\" adresini\nziyaret ederek ilgili hesabı " +
+                                                   "yine aynı satın alım kodu ile oluşturun.");
+//                            builder.setMessage("This code has been used before. You can't buy again with the same code");
+
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+
+
+
+//                            mProgressDialog.dismiss();
+                            //                            Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+//                            Intent authenticatorActivityIntent = new Intent(FirstRunActivity.this, AuthenticatorActivity.class);
+//                            authenticatorActivityIntent.putExtra(AuthenticatorActivity.EXTRA_USE_PROVIDER_AS_WEBLOGIN, false);
+//                            startActivityForResult(authenticatorActivityIntent, FIRST_RUN_RESULT_CODE);
+//
+
+
+
+
+                        }
+                        else{
+                            AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
+                            builder.setTitle("Following Error(s) Occurred! Please Check and Enter Correct Information");
+                            builder.setMessage(splitStr);
+
+
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        }
+
+//                    }
+//                    else{
+//                        mProgressDialog.dismiss();
+//                        Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+//                        Intent authenticatorActivityIntent = new Intent(FirstRunActivity.this, AuthenticatorActivity.class);
+//                        authenticatorActivityIntent.putExtra(AuthenticatorActivity.EXTRA_USE_PROVIDER_AS_WEBLOGIN, false);
+//                        startActivityForResult(authenticatorActivityIntent, FIRST_RUN_RESULT_CODE);
+//                    }
+
+
+
+
+                }
+            }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+//            @Nullable
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("name", nameStr);
+//                params.put("surname", surnameStr);
+//                params.put("email", emailStr);
+//                params.put("password", passwordStr);
+//                params.put("cell_phone_code", phoneCodeStr);
+//                params.put("cell_phone_number", phoneNumberStr);
+////                params.put("default_locale", defaultLocaleStr);
+//                params.put("gift_code", giftCodeStr);
+//
+//                return params;
+//            }
+        };
+
+        /*
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                                                  new Response.Listener<String>() {
+
+                                                      @Override
+                                                      public void onResponse(String response) {
+                                                          try {
+                                                              JSONObject respObj = new JSONObject(response);
+                                                              String nameStr = respObj.getString("name");
+                                                              String surnameStr = respObj.getString("surname");
+                                                              String emailStr = respObj.getString("email");
+                                                              String passwordStr = respObj.getString("password");
+                                                              String cellPhoneCodeStr = respObj.getString("cell_phone_code");
+                                                              String cellPhoneNumberStr = respObj.getString("cell_phone_number");
+                                                              String defaultLocaleStr = respObj.getString("default_locale");
+                                                              String giftCodeStr = respObj.getString("gift_code");
+                                                              mProgressDialog.dismiss();
+                                                              Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+
+                                                          } catch (JSONException e) {
+                                                              e.printStackTrace();
+                                                              mProgressDialog.dismiss();
+                                                          }
+                                                      }
+                                                  },
+                                                  new Response.ErrorListener() {
+
+                                                      @Override
+                                                      public void onErrorResponse(VolleyError error) {
+                                                          if (error == null || error.networkResponse == null) {
+                                                              return;
+                                                          }
+                                                          String body;
+                                                          final String statusCode = String.valueOf(error.networkResponse.statusCode);
+                                                          if (Integer.parseInt(statusCode) == 200) {
+                                                              mProgressDialog.dismiss();
+                                                              Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
+                                                              Toast.makeText(FirstRunActivity.this, "Your Information Registered Successfully", Toast.LENGTH_SHORT).show();
+
+                                                              AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
+                                                              builder.setTitle("Congratulation!");
+                                                              builder.setMessage("Your Information registered successfully...");
+
+
+                                                              AlertDialog alertDialog = builder.create();
+                                                              alertDialog.show();
+
+                                                          } else {
+                                                              Toast.makeText(FirstRunActivity.this, "response: " + statusCode, Toast.LENGTH_SHORT).show();
+                                                              mProgressDialog.dismiss();
+                                                              body = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+//                          Toast.makeText(FirstRunActivity.this, "B: " + body, Toast.LENGTH_SHORT).show();
+//                              mProgressDialog.setMessage(body);
+                                                              String newString = body.replaceAll("[\\{\\}\\[\\]\"]", "");
+                                                              String formattedStr = newString.replaceAll(",", "\n\n");
+                                                              String splitStr = formattedStr.substring(102);
+                                                              AlertDialog.Builder builder = new AlertDialog.Builder(FirstRunActivity.this);
+                                                              builder.setTitle("Following Error(s) Occurred! Please Check and Enter Correct Information");
+                                                              builder.setMessage(splitStr);
+
+
+                                                              AlertDialog alertDialog = builder.create();
+                                                              alertDialog.show();
+                                                          }
+//
+                                                      }
+                                                  }) {
             @NonNull
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -349,6 +568,8 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
         };
 
         queue.add(request);
+        */
+        queue.add(jsonObjectRequest);
     }
 
     private void setSlideshowSize(boolean isLandscape) {
@@ -361,10 +582,10 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
         LinearLayout bottomLayout = findViewById(R.id.bottomLayout);
         if (isProviderOrOwnInstallationVisible) {
             layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                                                         ViewGroup.LayoutParams.WRAP_CONTENT);
         } else {
             layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    DisplayUtils.convertDpToPixel(isLandscape ? 100f : 150f, this));
+                                                         DisplayUtils.convertDpToPixel(isLandscape ? 100f : 150f, this));
         }
 
         bottomLayout.setLayoutParams(layoutParams);
@@ -452,12 +673,11 @@ public class FirstRunActivity extends BaseActivity implements ViewPager.OnPageCh
     }
 
 
-
     public static FeatureItem[] getFirstRun() {
         return new FeatureItem[]{
-                new FeatureItem(R.drawable.logo, R.string.first_run_1_text, R.string.empty, true, false),
-                new FeatureItem(R.drawable.first_run_files, R.string.first_run_2_text, R.string.empty, true, false),
-                new FeatureItem(R.drawable.first_run_groupware, R.string.first_run_3_text, R.string.empty, true, false),
-                new FeatureItem(R.drawable.first_run_talk, R.string.first_run_4_text, R.string.empty, true, false)};
+            new FeatureItem(R.drawable.logo, R.string.first_run_1_text, R.string.empty, true, false),
+            new FeatureItem(R.drawable.first_run_files, R.string.first_run_2_text, R.string.empty, true, false),
+            new FeatureItem(R.drawable.first_run_groupware, R.string.first_run_3_text, R.string.empty, true, false),
+            new FeatureItem(R.drawable.first_run_talk, R.string.first_run_4_text, R.string.empty, true, false)};
     }
 }
